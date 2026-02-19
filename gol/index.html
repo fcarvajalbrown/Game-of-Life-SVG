@@ -1,0 +1,4 @@
+<!doctypehtml><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>Bio-Digital Game of Life</title><link href=ui.css rel=stylesheet></head><body><svg style=position:absolute;width:0;height:0 xmlns=http://www.w3.org/2000/svg><defs><filter id=gooey><feGaussianBlur in=SourceGraphic result=blur stdDeviation=8 /><feColorMatrix in=blur mode=matrix result=gooey values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 20 -10"/><feComposite in=SourceGraphic in2=gooey operator=atop /></filter></defs></svg><div id=gooey-container><canvas id=canvas></canvas></div><div id=panel></div><script>var Module={canvas:document.getElementById("canvas")}</script><script src=ui.js></script><script src=index.js async></script></body></html>

@@ -1,0 +1,52 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+
+      - name: Build
+        working-directory: gol
+        run: |
+          em++ -std=c++17 -O2 -Iinclude \
+            src/main.cpp src/grid.cpp src/renderer.cpp \
+            -s WASM=1 \
+            -s USE_SDL=2 \
+            -s ALLOW_MEMORY_GROWTH=1 \
+            -s EXPORTED_FUNCTIONS='["_gol_init"]' \
+            -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
+            --shell-file shell.html \
+            -o index.html
+          cp ui.js ui.css .
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: gol/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

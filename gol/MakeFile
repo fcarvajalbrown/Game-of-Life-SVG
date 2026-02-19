@@ -1,0 +1,24 @@
+CXX      = em++
+CXXFLAGS = -std=c++17 -O2 -Iinclude
+
+SRCS = src/main.cpp src/grid.cpp src/renderer.cpp
+
+OUTPUT = index.html
+
+EMFLAGS = \
+	-s WASM=1 \
+	-s USE_SDL=2 \
+	-s ALLOW_MEMORY_GROWTH=1 \
+	-s EXPORTED_FUNCTIONS='["_gol_init"]' \
+	-s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
+	--shell-file shell.html
+
+# Copy ui.js and ui.css next to index.html after build
+all: $(OUTPUT)
+	cp ui.js ui.css $(dir $(OUTPUT))
+
+$(OUTPUT): $(SRCS) shell.html
+	$(CXX) $(CXXFLAGS) $(SRCS) $(EMFLAGS) -o $(OUTPUT)
+
+clean:
+	-rm -f index.html index.js index.wasm
